@@ -1,0 +1,33 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+entity register_file is
+port(
+clk : in std_logic;
+reset : in std_logic;
+read_en : in std_logic;
+write_en : in std_logic;
+addr : in std_logic_vector(2 downto 0);
+in_val : in std_logic_vector(15 downto 0);
+out_val : out std_logic_vector(15 downto 0)
+);
+end register_file;
+architecture bhv of register_file is
+type RegisterArray is array (6 downto 0) of STD_LOGIC_VECTOR(15 downto 0);
+    signal registers : RegisterArray := (others => (others => '0'));
+begin
+reg_file : process(clk,addr,in_val) 
+begin
+if reset = '1' then
+            registers <= (others => (others => '0'));
+        elsif rising_edge(clk) then
+            if write_en = '1' then
+                registers(to_integer(unsigned(addr))) <= in_val;
+            end if;
+            
+            if read_en = '1' then
+                out_val <= registers(to_integer(unsigned(addr)));
+            end if;
+        end if;
+end process;
+end bhv;
